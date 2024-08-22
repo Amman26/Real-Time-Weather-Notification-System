@@ -7,20 +7,46 @@ module.exports = async function (context, myTimer) {
 
     const weatherApiKey = process.env.WEATHER_API_KEY;
     const city = 'Bokaro'; // Change to your desired city
-    const weatherUrl = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherApiKey}&units=metric`;
+    const currentWeatherUrl = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherApiKey}&units=metric`;
+    const forecastUrl = `http://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${weatherApiKey}&units=metric`;
 
     try {
-        const weatherResponse = await axios.get(weatherUrl); // Renamed to avoid conflict
+        // Fetch current weather
+        const weatherResponse = await axios.get(currentWeatherUrl);
         const weatherDescription = weatherResponse.data.weather[0].description;
-        const temperature = weatherResponse.data.main.temp; 
+        const temperature = weatherResponse.data.main.temp;
         const weatherCondition = `Current weather in ${city}: ${weatherDescription}. Temperature: ${temperature}°C.`;
 
-        let emailSubject = 'Current Weather Update';
-        let emailBody = weatherCondition;
+        // Fetch weather forecast
+        const forecastResponse = await axios.get(forecastUrl);
+        const forecastList = forecastResponse.data.list;
 
-        if (weatherDescription.includes('storm')) {
+        let severeWeatherAlert = '';
+        let forecastDetails = '';
+
+        // Check forecast for severe weather and compile forecast details
+        for (let i = 0; i < forecastList.length; i++) {
+            const forecast = forecastList[i];
+            const forecastDescription = forecast.weather[0].description;
+            const forecastTime = forecast.dt_txt;
+
+            if (forecastDescription.includes('storm') || forecastDescription.includes('heavy rain') || forecastDescription.includes('snow')) {
+                severeWeatherAlert = `\n\nAlert: Severe weather conditions expected on ${forecastTime} in ${city}: ${forecastDescription}. Please take necessary precautions.`;
+                break;
+            }
+
+            // Add forecast details for the next 24 hours
+            if (new Date(forecast.dt_txt).getHours() % 5 === 0) { // Every 3 hours
+                forecastDetails += `\nForecast for ${forecastTime}: ${forecastDescription}. Temperature: ${forecast.main.temp}°C.`;
+            }
+        }
+
+        let emailSubject = 'Weather Update';
+        let emailBody = `${weatherCondition}${forecastDetails}`;
+
+        if (severeWeatherAlert) {
             emailSubject = 'Severe Weather Alert!';
-            emailBody += `\n\nAlert: Severe weather condition detected in ${city}. Please take necessary precautions.`;
+            emailBody += severeWeatherAlert;
         }
 
         const emailMessage = {
@@ -39,10 +65,10 @@ module.exports = async function (context, myTimer) {
             }
         };
 
-        const emailResponse = await emailClient.beginSend(emailMessage); // Renamed to avoid conflict
+        const emailResponse = await emailClient.beginSend(emailMessage);
         await emailResponse.pollUntilDone();
 
-        context.log('Email sent successfully with current weather information.');
+        context.log('Email sent successfully with current weather and forecast information.');
     } catch (error) {
         context.log('Error fetching weather data or sending email:', error);
     }
