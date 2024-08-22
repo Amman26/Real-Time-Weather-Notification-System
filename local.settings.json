@@ -1,9 +1,9 @@
 {
   "IsEncrypted": false,
   "Values": {
-    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=weatherappstorage0;AccountKey=mim9lekpoVFrQmlST/SaPunSJpo3XQMdTBJfNoHEN1/lbM2FhSoOgNbuGhO4Y26e76Xr8IIQtfi8+ASthxegJg==;EndpointSuffix=core.windows.net",
+    "AzureWebJobsStorage": "DefaultEndpointsProtocol=https;AccountName=weatherappstorage0;AccountKey=mim9lekpoVFrQmlST/SaPHEN1/lbM2FhSoOg888888888888tfi8+ASthxegJg==;EndpointSuffix=core.windows.net",
     "FUNCTIONS_WORKER_RUNTIME": "node",
-     "ACS_CONNECTION_STRING": "endpoint=https://communicationservice00.unitedstates.communication.azure.com/;accesskey=FXHK4eqyMqoqkjiQqUTB7rkPaL6Uk3uUJQwVbsH3p8g8Oc6Hq0IRJQQJ99AHACULyCpOZQ91AAAAAZCSpGfG",
-    "WEATHER_API_KEY": "cf413f4aa93d6b20cd9eb88774c62e6c"
+     "ACS_CONNECTION_STRING": "endpoint=https://communicationservice00.unitedstates.communication.azure.com/;accesskey=FXHK4eqyMqoc6Hq0IRJQ888888888CpOZQ91AAAAAZCSpGfG",
+    "WEATHER_API_KEY": "cf413f4a888888888888888862e6c"
   }
 }
